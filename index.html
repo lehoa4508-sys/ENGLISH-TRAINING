@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>English Writing & Vocabulary Practice</title>
+    <title>English Writing & Vocabulary Practice with Public Leaderboard</title>
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- FontAwesome Icons -->
@@ -45,7 +45,6 @@
         .word-chip:active {
             transform: translateY(0);
         }
-        /* Custom scrollbar for better aesthetics */
         ::-webkit-scrollbar {
             width: 6px;
             height: 6px;
@@ -66,14 +65,14 @@
 
     <!-- Header Section -->
     <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
-        <div class="max-w-5xl mx-auto px-4 py-4 sm:px-6 flex flex-wrap justify-between items-center gap-4">
+        <div class="max-w-6xl mx-auto px-4 py-4 sm:px-6 flex flex-wrap justify-between items-center gap-4">
             <div class="flex items-center gap-3">
                 <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-blue-500/20">
                     <i class="fa-solid fa-graduation-cap"></i>
                 </div>
                 <div>
                     <h1 class="text-xl font-bold text-slate-900 leading-tight">English Practice Lab</h1>
-                    <p class="text-xs text-slate-500 font-medium">Luyện tập Kỹ năng Viết & Từ vựng</p>
+                    <p class="text-xs text-slate-500 font-medium">Luyện tập Kỹ năng Viết & Bảng xếp hạng Công khai</p>
                 </div>
             </div>
 
@@ -92,29 +91,33 @@
     </header>
 
     <!-- Main Content Container -->
-    <main class="max-w-5xl mx-auto px-4 py-6 sm:px-6 flex-grow w-full">
+    <main class="max-w-6xl mx-auto px-4 py-6 sm:px-6 flex-grow w-full">
 
         <!-- Navigation Tabs & Stats Bar -->
-        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 mb-6">
             <!-- Tabs -->
-            <div class="bg-slate-200/80 p-1 rounded-2xl flex w-full sm:w-auto">
-                <button id="tab-btn-1" onclick="switchTask(1)" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm">
+            <div class="bg-slate-200/80 p-1 rounded-2xl flex w-full md:w-auto overflow-x-auto">
+                <button id="tab-btn-1" onclick="switchTask(1)" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm whitespace-nowrap">
                     Task 1: Reorder Sentences
                 </button>
-                <button id="tab-btn-2" onclick="switchTask(2)" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
+                <button id="tab-btn-2" onclick="switchTask(2)" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900 whitespace-nowrap">
                     Task 2: Fill in the Blanks
+                </button>
+                <button id="tab-btn-history" onclick="switchTask('history')" class="px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900 whitespace-nowrap flex items-center gap-2">
+                    <i class="fa-solid fa-clock-rotate-left text-amber-500"></i>
+                    <span>Lịch sử nộp bài</span>
                 </button>
             </div>
 
             <!-- Stats Badge -->
-            <div id="stats-badge" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 flex items-center gap-4 shadow-sm w-full sm:w-auto justify-around">
+            <div id="stats-badge" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 flex items-center gap-4 shadow-sm w-full md:w-auto justify-around">
                 <div class="flex items-center gap-2">
                     <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Tiến độ:</span>
                     <span id="progress-text" class="text-sm font-bold text-slate-800">0/5</span>
                 </div>
                 <div class="h-4 w-px bg-slate-200"></div>
                 <div class="flex items-center gap-2">
-                    <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Điểm số:</span>
+                    <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Đã điền:</span>
                     <span id="score-text" class="text-sm font-bold text-blue-600">0%</span>
                 </div>
             </div>
@@ -158,12 +161,64 @@
             </div>
         </section>
 
-        <!-- Action Floating/Bottom Controls -->
-        <div class="mt-8 bg-white border border-slate-200 rounded-2xl p-4 shadow-lg flex flex-wrap gap-3 justify-between items-center">
+        <!-- History & Leaderboard Section -->
+        <section id="history-container" class="hidden space-y-6">
+            <div class="bg-amber-50/60 border border-amber-200/80 rounded-2xl p-4 sm:p-5 flex items-start gap-3">
+                <i class="fa-solid fa-globe text-amber-600 text-lg mt-0.5"></i>
+                <div class="text-sm text-slate-700">
+                    <strong class="font-bold text-slate-900 block mb-0.5">Lịch sử Nộp bài Công khai (Public Submissions):</strong>
+                    Danh sách các bài làm được nộp của tất cả người học từ khắp nơi. Kết quả được cập nhật trực tuyến (Real-time).
+                </div>
+            </div>
+
+            <!-- Search & Filter Controls -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm flex flex-col sm:flex-row gap-4 justify-between items-center">
+                <div class="relative w-full sm:w-72">
+                    <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-sm"></i>
+                    <input type="text" id="history-search-input" oninput="filterHistory()" placeholder="Tìm kiếm theo tên..." class="w-full pl-9 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-blue-500">
+                </div>
+
+                <div class="flex items-center gap-3 w-full sm:w-auto justify-end">
+                    <label class="text-xs font-bold text-slate-500 uppercase tracking-wider whitespace-nowrap">Sắp xếp:</label>
+                    <select id="history-sort-select" onchange="filterHistory()" class="bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-sm font-semibold text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500">
+                        <option value="time-desc">Thời gian mới nhất</option>
+                        <option value="score-desc">Điểm số cao nhất</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Table Container -->
+            <div class="bg-white border border-slate-200 rounded-2xl shadow-sm overflow-hidden">
+                <div class="overflow-x-auto">
+                    <table class="w-full text-left text-sm text-slate-600">
+                        <thead class="bg-slate-50 border-b border-slate-200 text-xs uppercase font-bold text-slate-500 tracking-wider">
+                            <tr>
+                                <th class="py-3.5 px-4 sm:px-6">Người làm bài</th>
+                                <th class="py-3.5 px-4 sm:px-6">Bài tập</th>
+                                <th class="py-3.5 px-4 sm:px-6 text-center">Kết quả</th>
+                                <th class="py-3.5 px-4 sm:px-6 text-center">Tỷ lệ %</th>
+                                <th class="py-3.5 px-4 sm:px-6 text-right">Thời gian nộp</th>
+                            </tr>
+                        </thead>
+                        <tbody id="history-table-body" class="divide-y divide-slate-100">
+                            <tr>
+                                <td colspan="5" class="py-8 text-center text-slate-400">
+                                    <i class="fa-solid fa-spinner fa-spin text-xl mb-2 text-blue-500 block"></i>
+                                    Đang tải lịch sử nộp bài...
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Action Controls Bar (shown for Task 1 & Task 2) -->
+        <div id="bottom-action-bar" class="mt-8 bg-white border border-slate-200 rounded-2xl p-4 shadow-lg flex flex-wrap gap-3 justify-between items-center">
             <div class="flex items-center gap-2">
-                <button onclick="checkAnswers()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition active:scale-95 flex items-center gap-2">
-                    <i class="fa-solid fa-circle-check"></i>
-                    <span>Chấm điểm (Check Answer)</span>
+                <button onclick="openSubmitModal()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-paper-plane"></i>
+                    <span>Nộp bài & Chấm điểm</span>
                 </button>
                 <button onclick="showAnswers()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition active:scale-95 flex items-center gap-2">
                     <i class="fa-solid fa-eye"></i>
@@ -179,12 +234,155 @@
 
     </main>
 
+    <!-- Modal Name Input & Submit Confirmation -->
+    <div id="submit-modal" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs z-50 flex items-center justify-center p-4 hidden">
+        <div class="bg-white rounded-3xl p-6 sm:p-8 max-w-md w-full shadow-2xl border border-slate-100 space-y-5 animate-fadeIn">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-2xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold text-lg">
+                        <i class="fa-solid fa-user-pen"></i>
+                    </div>
+                    <div>
+                        <h3 class="text-lg font-bold text-slate-900">Xác nhận Nộp Bài</h3>
+                        <p class="text-xs text-slate-500">Kết quả sẽ được công khai lên Bảng Lịch Sử</p>
+                    </div>
+                </div>
+                <button onclick="closeSubmitModal()" class="text-slate-400 hover:text-slate-600 p-1">
+                    <i class="fa-solid fa-xmark text-lg"></i>
+                </button>
+            </div>
+
+            <div>
+                <label class="block text-xs font-bold uppercase text-slate-500 mb-2 tracking-wider">Họ và Tên / Biệt danh:</label>
+                <input type="text" id="user-name-input" placeholder="Nhập tên của bạn (ví dụ: An Nguyễn)..." class="w-full px-4 py-3 bg-slate-50 border border-slate-200 rounded-xl font-medium text-slate-800 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:bg-white transition">
+            </div>
+
+            <div class="flex justify-end gap-2 pt-2">
+                <button onclick="closeSubmitModal()" class="px-5 py-2.5 rounded-xl font-semibold text-slate-600 hover:bg-slate-100 text-sm transition">
+                    Hủy
+                </button>
+                <button onclick="confirmSubmitAndGrade()" id="btn-confirm-submit" class="px-6 py-2.5 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-check"></i>
+                    <span>Chấm điểm & Nộp</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast -->
+    <div id="toast" class="fixed bottom-5 right-5 z-50 transform translate-y-20 opacity-0 transition-all duration-300 pointer-events-none">
+        <div class="bg-slate-900 text-white px-5 py-3.5 rounded-2xl shadow-xl flex items-center gap-3 text-sm font-medium">
+            <i id="toast-icon" class="fa-solid fa-circle-check text-emerald-400"></i>
+            <span id="toast-message">Nộp bài thành công!</span>
+        </div>
+    </div>
+
     <!-- Footer -->
     <footer class="bg-white border-t border-slate-200 py-4 mt-8 text-center text-xs text-slate-400">
-        English Learning App &copy; 2026 - Tự động chấm điểm & Xáo trộn thông minh
+        English Learning App &copy; 2026 - Tự động chấm điểm & Lưu trữ Công khai Firebase
     </footer>
 
-    <!-- Logic Script -->
+    <!-- Firebase Modular Setup -->
+    <script type="module">
+        import { initializeApp } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-app.js";
+        import { getAuth, signInAnonymously, signInWithCustomToken } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-auth.js";
+        import { getFirestore, collection, addDoc, onSnapshot } from "https://www.gstatic.com/firebasejs/11.6.1/firebase-firestore.js";
+
+        // Environment Variables Check
+        const appId = typeof __app_id !== 'undefined' ? __app_id : 'english-practice-app';
+        const firebaseConfig = typeof __firebase_config !== 'undefined' 
+            ? JSON.parse(__firebase_config) 
+            : {
+                apiKey: "demo-key",
+                authDomain: "demo.firebaseapp.com",
+                projectId: "demo-project",
+                storageBucket: "demo.appspot.com",
+                messagingSenderId: "000000000",
+                appId: "1:000000000:web:000000000"
+            };
+
+        const app = initializeApp(firebaseConfig);
+        const auth = getAuth(app);
+        const db = getFirestore(app);
+
+        let currentUser = null;
+        let submissionsList = [];
+
+        // Auth Setup
+        async function initAuth() {
+            try {
+                if (typeof __initial_auth_token !== 'undefined' && __initial_auth_token) {
+                    const cred = await signInWithCustomToken(auth, __initial_auth_token);
+                    currentUser = cred.user;
+                } else {
+                    const cred = await signInAnonymously(auth);
+                    currentUser = cred.user;
+                }
+            } catch (err) {
+                console.error("Auth error:", err);
+            } finally {
+                // Listen to public submissions
+                listenToSubmissions();
+            }
+        }
+
+        // Firestore Public Collection Path (Rule 1 Compliance)
+        function getSubmissionsCollection() {
+            return collection(db, 'artifacts', appId, 'public', 'data', 'submissions');
+        }
+
+        // Realtime Firestore Listener (Rule 2 Compliance: no complex query)
+        function listenToSubmissions() {
+            try {
+                const subRef = getSubmissionsCollection();
+                onSnapshot(subRef, (snapshot) => {
+                    submissionsList = [];
+                    snapshot.forEach((doc) => {
+                        submissionsList.push({ id: doc.id, ...doc.data() });
+                    });
+                    window.allSubmissions = submissionsList;
+                    if (window.filterHistory) {
+                        window.filterHistory();
+                    }
+                }, (error) => {
+                    console.error("Firestore Listen Error:", error);
+                });
+            } catch (e) {
+                console.error("Firestore Error:", e);
+            }
+        }
+
+        // Global function to save submission
+        window.saveSubmissionToFirestore = async function(submissionData) {
+            if (!auth.currentUser) {
+                try {
+                    await signInAnonymously(auth);
+                } catch(e) {
+                    console.error("Sign in failed:", e);
+                }
+            }
+            try {
+                const subRef = getSubmissionsCollection();
+                await addDoc(subRef, {
+                    userName: submissionData.userName,
+                    taskTitle: submissionData.taskTitle,
+                    correctCount: submissionData.correctCount,
+                    totalCount: submissionData.totalCount,
+                    percentage: submissionData.percentage,
+                    createdAt: Date.now()
+                });
+                return true;
+            } catch (err) {
+                console.error("Save submission error:", err);
+                return false;
+            }
+        };
+
+        // Initialize Auth
+        initAuth();
+    </script>
+
+    <!-- Main Logic Script -->
     <script>
         // Data source
         const rawTask1Data = [
@@ -251,14 +449,11 @@
         };
 
         // State Management
-        let currentTask = 1;
+        let currentTask = 1; // 1, 2, or 'history'
         let task1Data = JSON.parse(JSON.stringify(rawTask1Data));
         let task2Data = JSON.parse(JSON.stringify(rawTask2Data));
         
-        // User answers state
-        // Task 1: { questionId: [selectedWords] }
         let task1UserAnswers = {}; 
-        // Task 2: { questionId: "word" }
         let task2UserAnswers = {};
 
         // Helper: Utility to shuffle array
@@ -273,7 +468,6 @@
 
         // Initialize state
         function initData() {
-            // Shuffle initial word chips inside questions for Task 1
             task1Data.forEach(q => {
                 q.shuffledWords = shuffleArray(q.words);
                 task1UserAnswers[q.id] = [];
@@ -282,27 +476,51 @@
             task2Data.questions.forEach(q => {
                 task2UserAnswers[q.id] = "";
             });
+
+            // Restore saved username if available
+            const savedName = localStorage.getItem('english_app_username');
+            if (savedName) {
+                const nameInput = document.getElementById('user-name-input');
+                if (nameInput) nameInput.value = savedName;
+            }
         }
 
         // Switch Tabs
-        function switchTask(taskNum) {
-            currentTask = taskNum;
+        function switchTask(taskTab) {
+            currentTask = taskTab;
             const tab1 = document.getElementById('tab-btn-1');
             const tab2 = document.getElementById('tab-btn-2');
+            const tabHis = document.getElementById('tab-btn-history');
+
             const cont1 = document.getElementById('task-1-container');
             const cont2 = document.getElementById('task-2-container');
+            const contHis = document.getElementById('history-container');
+            const bottomBar = document.getElementById('bottom-action-bar');
 
-            if (taskNum === 1) {
-                tab1.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm";
-                tab2.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+            // Reset tab styles
+            [tab1, tab2, tabHis].forEach(t => {
+                t.className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900 whitespace-nowrap flex items-center gap-2";
+            });
+
+            cont1.classList.add('hidden');
+            cont2.classList.add('hidden');
+            contHis.classList.add('hidden');
+
+            if (taskTab === 1) {
+                tab1.className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm whitespace-nowrap";
                 cont1.classList.remove('hidden');
-                cont2.classList.add('hidden');
-            } else {
-                tab2.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm";
-                tab1.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                bottomBar.classList.remove('hidden');
+            } else if (taskTab === 2) {
+                tab2.className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm whitespace-nowrap";
                 cont2.classList.remove('hidden');
-                cont1.classList.add('hidden');
+                bottomBar.classList.remove('hidden');
+            } else if (taskTab === 'history') {
+                tabHis.className = "px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm whitespace-nowrap flex items-center gap-2";
+                contHis.classList.remove('hidden');
+                bottomBar.classList.add('hidden');
+                filterHistory();
             }
+
             updateStats();
         }
 
@@ -314,12 +532,10 @@
             task1Data.forEach((q, idx) => {
                 const userSelected = task1UserAnswers[q.id] || [];
                 
-                // Card Wrapper
                 const card = document.createElement('div');
                 card.className = "bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm transition hover:border-slate-300";
                 card.id = `t1-card-${q.id}`;
 
-                // Header
                 const cardHeader = `
                     <div class="flex justify-between items-center mb-3">
                         <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">Câu ${idx + 1} (${q.wordCount} words)</span>
@@ -329,9 +545,8 @@
                     </div>
                 `;
 
-                // Answer Area (Where chosen chips go)
                 let selectedChipsHtml = userSelected.map((wordObj, wordIndex) => `
-                    <button onclick="deselectWord(${q.id}, ${wordIndex})" class="word-chip bg-blue-600 text-white font-medium px-3 py-1.5 rounded-xl text-sm shadow-sm hover:bg-blue-700 flex items-center gap-1.5 animate-fadeIn">
+                    <button onclick="deselectWord(${q.id}, ${wordIndex})" class="word-chip bg-blue-600 text-white font-medium px-3 py-1.5 rounded-xl text-sm shadow-sm hover:bg-blue-700 flex items-center gap-1.5">
                         <span>${wordObj.text}</span>
                         <i class="fa-solid fa-xmark text-xs opacity-70"></i>
                     </button>
@@ -341,7 +556,6 @@
                     selectedChipsHtml = `<span class="text-slate-400 text-sm italic">Nhấp vào các từ phía dưới để xếp câu...</span>`;
                 }
 
-                // Pool Area (Available chips)
                 const poolChipsHtml = q.shuffledWords.map((word, originalIndex) => {
                     const isUsed = userSelected.some(item => item.originalIndex === originalIndex);
                     if (isUsed) {
@@ -356,18 +570,12 @@
 
                 card.innerHTML = `
                     ${cardHeader}
-                    
-                    <!-- Selected Drop Zone -->
                     <div class="min-h-[56px] p-3 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex flex-wrap gap-2 items-center mb-4 transition-colors" id="t1-zone-${q.id}">
                         ${selectedChipsHtml}
                     </div>
-
-                    <!-- Available Word Pool -->
                     <div class="flex flex-wrap gap-2 items-center pt-2">
                         ${poolChipsHtml}
                     </div>
-
-                    <!-- Feedback Box -->
                     <div id="t1-feedback-${q.id}" class="hidden mt-4 pt-3 border-t border-slate-100 text-sm"></div>
                 `;
 
@@ -377,7 +585,6 @@
 
         // Render Task 2
         function renderTask2() {
-            // Word Bank
             const wordBankContainer = document.getElementById('word-bank-container');
             wordBankContainer.innerHTML = task2Data.wordBank.map(word => `
                 <span class="bg-slate-100 text-slate-700 font-medium text-sm px-3 py-1.5 rounded-xl border border-slate-200 select-all cursor-pointer hover:bg-slate-200 transition">
@@ -385,11 +592,10 @@
                 </span>
             `).join('');
 
-            // Questions
             const questionsContainer = document.getElementById('task2-questions-list');
             questionsContainer.innerHTML = "";
 
-            task2Data.questions.forEach((q, idx) => {
+            task2Data.questions.forEach((q) => {
                 const val = task2UserAnswers[q.id] || "";
                 
                 const qRow = document.createElement('div');
@@ -439,25 +645,22 @@
             updateStats();
         }
 
-        // Random/Shuffle Functions
+        // Shuffle & Reset
         function shuffleCurrentTask() {
             if (currentTask === 1) {
-                // Shuffle questions order
                 task1Data = shuffleArray(task1Data);
-                // Also reshuffle word pools
                 task1Data.forEach(q => {
                     q.shuffledWords = shuffleArray(q.words);
-                    task1UserAnswers[q.id] = []; // Clear current answer on shuffle
+                    task1UserAnswers[q.id] = [];
                 });
                 renderTask1();
-            } else {
-                // Shuffle questions order
+            } else if (currentTask === 2) {
                 task2Data.questions = shuffleArray(task2Data.questions);
-                // Reshuffle word bank display
                 task2Data.wordBank = shuffleArray(task2Data.wordBank);
                 renderTask2();
             }
             updateStats();
+            showToast("Đã xáo trộn ngẫu nhiên câu hỏi!", "fa-shuffle");
         }
 
         function resetCurrentTask() {
@@ -466,36 +669,52 @@
                     task1UserAnswers[q.id] = [];
                 });
                 renderTask1();
-            } else {
+            } else if (currentTask === 2) {
                 task2Data.questions.forEach(q => {
                     task2UserAnswers[q.id] = "";
                 });
                 renderTask2();
             }
             updateStats();
+            showToast("Đã xóa câu trả lời để làm lại!", "fa-rotate-right");
         }
 
-        // Check Answers & Grading
-        function checkAnswers() {
+        // Modal Controls
+        function openSubmitModal() {
+            document.getElementById('submit-modal').classList.remove('hidden');
+        }
+
+        function closeSubmitModal() {
+            document.getElementById('submit-modal').classList.add('hidden');
+        }
+
+        // Confirm Submit and Grade
+        async function confirmSubmitAndGrade() {
+            const userNameInput = document.getElementById('user-name-input');
+            const userName = userNameInput.value.trim() || "Người học ẩn danh";
+            localStorage.setItem('english_app_username', userName);
+
+            const btnSubmit = document.getElementById('btn-confirm-submit');
+            btnSubmit.disabled = true;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Đang nộp...`;
+
+            // Calculate Grade
+            let correctCount = 0;
+            let totalCount = 0;
+            let taskTitle = "";
+
             if (currentTask === 1) {
-                let correctCount = 0;
+                totalCount = task1Data.length;
+                taskTitle = "Task 1: Reorder Sentences";
 
                 task1Data.forEach(q => {
-                    const userSentence = (task1UserAnswers[q.id] || [])
-                        .map(item => item.text)
-                        .join(" ")
-                        .trim();
-
+                    const userSentence = (task1UserAnswers[q.id] || []).map(item => item.text).join(" ").trim();
                     const feedbackEl = document.getElementById(`t1-feedback-${q.id}`);
-                    const cardEl = document.getElementById(`t1-card-${q.id}`);
                     const zoneEl = document.getElementById(`t1-zone-${q.id}`);
                     
                     feedbackEl.classList.remove('hidden');
 
-                    // Check string equality ignoring slight punctuation space issues
-                    const isCorrect = q.correctAnswers.some(ans => {
-                        return cleanSentence(userSentence) === cleanSentence(ans);
-                    });
+                    const isCorrect = q.correctAnswers.some(ans => cleanSentence(userSentence) === cleanSentence(ans));
 
                     if (isCorrect) {
                         correctCount++;
@@ -522,8 +741,10 @@
                     }
                 });
 
-            } else {
-                // Task 2
+            } else if (currentTask === 2) {
+                totalCount = task2Data.questions.length;
+                taskTitle = "Task 2: Fill in Blanks";
+
                 task2Data.questions.forEach(q => {
                     const userVal = (task2UserAnswers[q.id] || "").toLowerCase().trim();
                     const correctVal = q.answer.toLowerCase().trim();
@@ -534,6 +755,7 @@
                     feedbackEl.classList.remove('hidden');
 
                     if (userVal === correctVal) {
+                        correctCount++;
                         rowEl.className = "p-4 bg-emerald-50/80 rounded-xl border border-emerald-200 space-y-2";
                         feedbackEl.innerHTML = `
                             <span class="text-emerald-700 font-bold flex items-center gap-1.5">
@@ -551,12 +773,25 @@
                 });
             }
 
-            updateStats();
-        }
+            const percentage = Math.round((correctCount / totalCount) * 100);
 
-        // Helper to normalize strings for comparison
-        function cleanSentence(str) {
-            return str.replace(/\s+/g, ' ').replace(/\s([.,!?:;])/g, '$1').toLowerCase().trim();
+            // Save to Firebase Public Submissions
+            if (window.saveSubmissionToFirestore) {
+                await window.saveSubmissionToFirestore({
+                    userName: userName,
+                    taskTitle: taskTitle,
+                    correctCount: correctCount,
+                    totalCount: totalCount,
+                    percentage: percentage
+                });
+            }
+
+            btnSubmit.disabled = false;
+            btnSubmit.innerHTML = `<i class="fa-solid fa-check"></i><span>Chấm điểm & Nộp</span>`;
+            closeSubmitModal();
+
+            showToast(`Đã nộp bài! Đạt ${correctCount}/${totalCount} câu (${percentage}%)`, "fa-award");
+            updateStats();
         }
 
         // Show Answers Direct
@@ -572,7 +807,7 @@
                         </div>
                     `;
                 });
-            } else {
+            } else if (currentTask === 2) {
                 task2Data.questions.forEach(q => {
                     const feedbackEl = document.getElementById(`t2-feedback-${q.id}`);
                     feedbackEl.classList.remove('hidden');
@@ -585,7 +820,98 @@
             }
         }
 
-        // Update Progress & Score
+        // Filter and Render History
+        function filterHistory() {
+            const submissions = window.allSubmissions || [];
+            const searchVal = (document.getElementById('history-search-input')?.value || "").toLowerCase().trim();
+            const sortVal = document.getElementById('history-sort-select')?.value || "time-desc";
+
+            let filtered = submissions.filter(item => {
+                return (item.userName || "").toLowerCase().includes(searchVal);
+            });
+
+            // Sort in memory (Rule 2 Compliance)
+            filtered.sort((a, b) => {
+                if (sortVal === "time-desc") {
+                    return (b.createdAt || 0) - (a.createdAt || 0);
+                } else if (sortVal === "score-desc") {
+                    return (b.percentage || 0) - (a.percentage || 0);
+                }
+                return 0;
+            });
+
+            renderHistoryTable(filtered);
+        }
+
+        function renderHistoryTable(dataList) {
+            const tbody = document.getElementById('history-table-body');
+            if (!tbody) return;
+
+            if (dataList.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="5" class="py-8 text-center text-slate-400">
+                            Chưa có lịch sử nộp bài nào phù hợp.
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+
+            tbody.innerHTML = dataList.map(item => {
+                const timeStr = item.createdAt ? new Date(item.createdAt).toLocaleString('vi-VN') : 'Không rõ';
+                const badgeColor = item.percentage >= 80 
+                    ? 'bg-emerald-50 text-emerald-700 border-emerald-200' 
+                    : item.percentage >= 50 
+                    ? 'bg-amber-50 text-amber-700 border-amber-200' 
+                    : 'bg-rose-50 text-rose-700 border-rose-200';
+
+                return `
+                    <tr class="hover:bg-slate-50/80 transition">
+                        <td class="py-3.5 px-4 sm:px-6 font-semibold text-slate-900 flex items-center gap-2">
+                            <div class="w-8 h-8 rounded-full bg-slate-100 text-slate-600 flex items-center justify-center font-bold text-xs border border-slate-200">
+                                ${(item.userName || 'U').charAt(0).toUpperCase()}
+                            </div>
+                            <span>${item.userName || 'Người học ẩn danh'}</span>
+                        </td>
+                        <td class="py-3.5 px-4 sm:px-6 font-medium text-slate-600">
+                            ${item.taskTitle || 'Bài tập'}
+                        </td>
+                        <td class="py-3.5 px-4 sm:px-6 text-center font-bold text-slate-800">
+                            ${item.correctCount}/${item.totalCount}
+                        </td>
+                        <td class="py-3.5 px-4 sm:px-6 text-center">
+                            <span class="inline-block px-2.5 py-1 rounded-lg text-xs font-bold border ${badgeColor}">
+                                ${item.percentage}%
+                            </span>
+                        </td>
+                        <td class="py-3.5 px-4 sm:px-6 text-right text-xs text-slate-400">
+                            ${timeStr}
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+        }
+
+        // Toast message utility
+        function showToast(msg, iconClass = "fa-circle-check") {
+            const toast = document.getElementById('toast');
+            const toastMsg = document.getElementById('toast-message');
+            const toastIcon = document.getElementById('toast-icon');
+
+            toastMsg.innerText = msg;
+            toastIcon.className = `fa-solid ${iconClass} text-emerald-400`;
+
+            toast.classList.remove('translate-y-20', 'opacity-0');
+            setTimeout(() => {
+                toast.classList.add('translate-y-20', 'opacity-0');
+            }, 3000);
+        }
+
+        function cleanSentence(str) {
+            return str.replace(/\s+/g, ' ').replace(/\s([.,!?:;])/g, '$1').toLowerCase().trim();
+        }
+
         function updateStats() {
             let total = 0;
             let answered = 0;
@@ -593,7 +919,7 @@
             if (currentTask === 1) {
                 total = task1Data.length;
                 answered = Object.values(task1UserAnswers).filter(arr => arr.length > 0).length;
-            } else {
+            } else if (currentTask === 2) {
                 total = task2Data.questions.length;
                 answered = Object.values(task2UserAnswers).filter(val => val !== "").length;
             }
@@ -601,12 +927,13 @@
             const progressText = document.getElementById('progress-text');
             const scoreText = document.getElementById('score-text');
 
-            progressText.innerText = `${answered}/${total}`;
-            const percentage = Math.round((answered / total) * 100) || 0;
-            scoreText.innerText = `${percentage}% hoàn thành`;
+            if (progressText && scoreText) {
+                progressText.innerText = `${answered}/${total}`;
+                const percentage = Math.round((answered / total) * 100) || 0;
+                scoreText.innerText = `${percentage}%`;
+            }
         }
 
-        // Initialize on Load
         window.onload = function() {
             initData();
             renderTask1();
