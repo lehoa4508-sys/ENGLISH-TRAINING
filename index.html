@@ -1,0 +1,618 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Writing & Vocabulary Practice</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Plus Jakarta Sans', 'sans-serif'],
+                    },
+                    colors: {
+                        brand: {
+                            50: '#f0f7ff',
+                            100: '#e0effe',
+                            500: '#3b82f6',
+                            600: '#2563eb',
+                            700: '#1d4ed8',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #f8fafc;
+        }
+        .word-chip {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            user-select: none;
+        }
+        .word-chip:hover {
+            transform: translateY(-2px);
+        }
+        .word-chip:active {
+            transform: translateY(0);
+        }
+        /* Custom scrollbar for better aesthetics */
+        ::-webkit-scrollbar {
+            width: 6px;
+            height: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #f1f5f9;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #cbd5e1;
+            border-radius: 9999px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #94a3b8;
+        }
+    </style>
+</head>
+<body class="text-slate-800 antialiased min-h-screen flex flex-col justify-between">
+
+    <!-- Header Section -->
+    <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+        <div class="max-w-5xl mx-auto px-4 py-4 sm:px-6 flex flex-wrap justify-between items-center gap-4">
+            <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xl shadow-md shadow-blue-500/20">
+                    <i class="fa-solid fa-graduation-cap"></i>
+                </div>
+                <div>
+                    <h1 class="text-xl font-bold text-slate-900 leading-tight">English Practice Lab</h1>
+                    <p class="text-xs text-slate-500 font-medium">Luyện tập Kỹ năng Viết & Từ vựng</p>
+                </div>
+            </div>
+
+            <!-- Header Action Controls -->
+            <div class="flex items-center gap-2">
+                <button id="btn-shuffle-all" onclick="shuffleCurrentTask()" class="px-3.5 py-2 bg-amber-50 text-amber-700 hover:bg-amber-100 border border-amber-200 rounded-xl font-semibold text-sm transition flex items-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-shuffle"></i>
+                    <span>Random Câu hỏi</span>
+                </button>
+                <button onclick="resetCurrentTask()" class="px-3.5 py-2 bg-slate-100 text-slate-700 hover:bg-slate-200 rounded-xl font-semibold text-sm transition flex items-center gap-2 active:scale-95">
+                    <i class="fa-solid fa-rotate-right"></i>
+                    <span>Làm lại</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content Container -->
+    <main class="max-w-5xl mx-auto px-4 py-6 sm:px-6 flex-grow w-full">
+
+        <!-- Navigation Tabs & Stats Bar -->
+        <div class="flex flex-col sm:flex-row justify-between items-center gap-4 mb-6">
+            <!-- Tabs -->
+            <div class="bg-slate-200/80 p-1 rounded-2xl flex w-full sm:w-auto">
+                <button id="tab-btn-1" onclick="switchTask(1)" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm">
+                    Task 1: Reorder Sentences
+                </button>
+                <button id="tab-btn-2" onclick="switchTask(2)" class="flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900">
+                    Task 2: Fill in the Blanks
+                </button>
+            </div>
+
+            <!-- Stats Badge -->
+            <div id="stats-badge" class="bg-white border border-slate-200 rounded-2xl px-4 py-2 flex items-center gap-4 shadow-sm w-full sm:w-auto justify-around">
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Tiến độ:</span>
+                    <span id="progress-text" class="text-sm font-bold text-slate-800">0/5</span>
+                </div>
+                <div class="h-4 w-px bg-slate-200"></div>
+                <div class="flex items-center gap-2">
+                    <span class="text-xs text-slate-500 uppercase font-bold tracking-wider">Điểm số:</span>
+                    <span id="score-text" class="text-sm font-bold text-blue-600">0%</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Task 1: Reorder Sentences Container -->
+        <section id="task-1-container" class="space-y-6">
+            <div class="bg-blue-50/60 border border-blue-100 rounded-2xl p-4 sm:p-5 flex items-start gap-3">
+                <i class="fa-solid fa-circle-info text-blue-500 text-lg mt-0.5"></i>
+                <div class="text-sm text-slate-700">
+                    <strong class="font-bold text-slate-900 block mb-0.5">Yêu cầu Task 1:</strong>
+                    Sắp xếp lại các từ/cụm từ cho sẵn thành câu hoàn chỉnh có nghĩa. Nhấp vào các từ để ghép câu, nhấp lại vào từ ở ô trả lời nếu muốn bỏ chọn.
+                </div>
+            </div>
+
+            <div id="task1-questions-list" class="space-y-6">
+                <!-- Task 1 items rendered dynamic via JS -->
+            </div>
+        </section>
+
+        <!-- Task 2: Fill in the Blanks Container -->
+        <section id="task-2-container" class="hidden space-y-6">
+            <div class="bg-emerald-50/60 border border-emerald-100 rounded-2xl p-4 sm:p-5 flex items-start gap-3">
+                <i class="fa-solid fa-lightbulb text-emerald-600 text-lg mt-0.5"></i>
+                <div class="text-sm text-slate-700">
+                    <strong class="font-bold text-slate-900 block mb-0.5">Yêu cầu Task 2:</strong>
+                    Chọn từ phù hợp trong bảng từ gợi ý bên dưới để điền vào các chỗ trống trong câu.
+                </div>
+            </div>
+
+            <!-- Word Bank Box -->
+            <div class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm sticky top-20 z-20">
+                <span class="text-xs font-bold uppercase tracking-wider text-slate-400 block mb-3">Bảng từ gợi ý (Word Bank)</span>
+                <div id="word-bank-container" class="flex flex-wrap gap-2">
+                    <!-- Word bank chips rendered via JS -->
+                </div>
+            </div>
+
+            <div id="task2-questions-list" class="bg-white border border-slate-200 rounded-2xl p-4 sm:p-6 shadow-sm space-y-6">
+                <!-- Task 2 items rendered dynamic via JS -->
+            </div>
+        </section>
+
+        <!-- Action Floating/Bottom Controls -->
+        <div class="mt-8 bg-white border border-slate-200 rounded-2xl p-4 shadow-lg flex flex-wrap gap-3 justify-between items-center">
+            <div class="flex items-center gap-2">
+                <button onclick="checkAnswers()" class="px-6 py-3 bg-blue-600 hover:bg-blue-700 text-white rounded-xl font-bold text-sm shadow-md shadow-blue-500/20 transition active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-circle-check"></i>
+                    <span>Chấm điểm (Check Answer)</span>
+                </button>
+                <button onclick="showAnswers()" class="px-4 py-3 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-xl font-semibold text-sm transition active:scale-95 flex items-center gap-2">
+                    <i class="fa-solid fa-eye"></i>
+                    <span>Xem đáp án</span>
+                </button>
+            </div>
+            
+            <button onclick="shuffleCurrentTask()" class="text-slate-500 hover:text-blue-600 font-semibold text-sm flex items-center gap-1.5 px-2 py-1 transition">
+                <i class="fa-solid fa-dice"></i>
+                <span>Tráo đổi ngẫu nhiên</span>
+            </button>
+        </div>
+
+    </main>
+
+    <!-- Footer -->
+    <footer class="bg-white border-t border-slate-200 py-4 mt-8 text-center text-xs text-slate-400">
+        English Learning App &copy; 2026 - Tự động chấm điểm & Xáo trộn thông minh
+    </footer>
+
+    <!-- Logic Script -->
+    <script>
+        // Data source
+        const rawTask1Data = [
+            {
+                id: 1,
+                words: ["should", "connect", "ones.", "generations", "with", "younger", "technology", "to", "Older", "access"],
+                correctAnswers: [
+                    "Older people should access technology to connect with younger generations.",
+                    "Older generations should access technology to connect with younger ones."
+                ],
+                wordCount: 10
+            },
+            {
+                id: 2,
+                words: ["must", "customs.", "respect", "people", "parents'", "traditional", "and", "Young", "values", "their"],
+                correctAnswers: [
+                    "Young people must respect their parents' traditional values and customs.",
+                    "Young people must respect their parents' customs and traditional values."
+                ],
+                wordCount: 10
+            },
+            {
+                id: 3,
+                words: ["face-to-face", "relationships.", "people", "to", "Young", "interactions", "must", "build", "stronger", "prioritise"],
+                correctAnswers: [
+                    "Young people must prioritise face-to-face interactions to build stronger relationships.",
+                    "Young people must prioritize face-to-face interactions to build stronger relationships."
+                ],
+                wordCount: 10
+            },
+            {
+                id: 4,
+                words: ["workplace.", "the", "value", "of", "professionals", "Newcomers", "experiences", "should", "the", "older", "in"],
+                correctAnswers: [
+                    "Newcomers should value the experiences of older professionals in the workplace."
+                ],
+                wordCount: 11
+            },
+            {
+                id: 5,
+                words: ["today's", "recognize", "digital", "Older", "importance", "in", "people", "the", "should", "of", "literacy", "world."],
+                correctAnswers: [
+                    "Older people should recognize the importance of digital literacy in today's world.",
+                    "Older people should recognise the importance of digital literacy in today's world."
+                ],
+                wordCount: 12
+            }
+        ];
+
+        const rawTask2Data = {
+            wordBank: ["social", "suit", "culture", "lifestyle", "characteristics", "choice", "influence", "historical", "view", "traditional"],
+            questions: [
+                { id: 1, prefix: "1. The building is of ", suffix: " importance.", answer: "historical" },
+                { id: 2, prefix: "2. He admired the simple ", suffix: " of the islanders.", answer: "lifestyle" },
+                { id: 3, prefix: "3. Do TV programmes ", suffix: " children's behaviour?", answer: "influence" },
+                { id: 4, prefix: "4. My mum's ", suffix: " of the situation was different to me.", answer: "view" },
+                { id: 5, prefix: "5. He had several ", suffix: " which made him different to the rest of his family.", answer: "characteristics" },
+                { id: 6, prefix: "6. Students have an entirely free ", suffix: " of what to study at university.", answer: "choice" },
+                { id: 7, prefix: "7. In our ", suffix: " it is rude to ask someone how much they earn.", answer: "culture" },
+                { id: 8, prefix: "8. Group play helps children develop ", suffix: " skills.", answer: "social" },
+                { id: 9, prefix: "9. He called for a return to ", suffix: " values.", answer: "traditional" },
+                { id: 10, prefix: "10. When writing emails, most people vary the style to ", suffix: " the circumstances.", answer: "suit" }
+            ]
+        };
+
+        // State Management
+        let currentTask = 1;
+        let task1Data = JSON.parse(JSON.stringify(rawTask1Data));
+        let task2Data = JSON.parse(JSON.stringify(rawTask2Data));
+        
+        // User answers state
+        // Task 1: { questionId: [selectedWords] }
+        let task1UserAnswers = {}; 
+        // Task 2: { questionId: "word" }
+        let task2UserAnswers = {};
+
+        // Helper: Utility to shuffle array
+        function shuffleArray(array) {
+            const arr = [...array];
+            for (let i = arr.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [arr[i], arr[j]] = [arr[j], arr[i]];
+            }
+            return arr;
+        }
+
+        // Initialize state
+        function initData() {
+            // Shuffle initial word chips inside questions for Task 1
+            task1Data.forEach(q => {
+                q.shuffledWords = shuffleArray(q.words);
+                task1UserAnswers[q.id] = [];
+            });
+
+            task2Data.questions.forEach(q => {
+                task2UserAnswers[q.id] = "";
+            });
+        }
+
+        // Switch Tabs
+        function switchTask(taskNum) {
+            currentTask = taskNum;
+            const tab1 = document.getElementById('tab-btn-1');
+            const tab2 = document.getElementById('tab-btn-2');
+            const cont1 = document.getElementById('task-1-container');
+            const cont2 = document.getElementById('task-2-container');
+
+            if (taskNum === 1) {
+                tab1.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm";
+                tab2.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                cont1.classList.remove('hidden');
+                cont2.classList.add('hidden');
+            } else {
+                tab2.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 bg-white text-blue-600 shadow-sm";
+                tab1.className = "flex-1 sm:flex-none px-5 py-2.5 rounded-xl font-bold text-sm transition-all duration-200 text-slate-600 hover:text-slate-900";
+                cont2.classList.remove('hidden');
+                cont1.classList.add('hidden');
+            }
+            updateStats();
+        }
+
+        // Render Task 1
+        function renderTask1() {
+            const container = document.getElementById('task1-questions-list');
+            container.innerHTML = "";
+
+            task1Data.forEach((q, idx) => {
+                const userSelected = task1UserAnswers[q.id] || [];
+                
+                // Card Wrapper
+                const card = document.createElement('div');
+                card.className = "bg-white border border-slate-200 rounded-2xl p-5 sm:p-6 shadow-sm transition hover:border-slate-300";
+                card.id = `t1-card-${q.id}`;
+
+                // Header
+                const cardHeader = `
+                    <div class="flex justify-between items-center mb-3">
+                        <span class="text-xs font-bold uppercase tracking-wider text-blue-600 bg-blue-50 px-2.5 py-1 rounded-lg">Câu ${idx + 1} (${q.wordCount} words)</span>
+                        <button onclick="clearTask1Answer(${q.id})" class="text-xs font-semibold text-slate-400 hover:text-rose-500 transition">
+                            <i class="fa-solid fa-eraser mr-1"></i>Xóa làm lại
+                        </button>
+                    </div>
+                `;
+
+                // Answer Area (Where chosen chips go)
+                let selectedChipsHtml = userSelected.map((wordObj, wordIndex) => `
+                    <button onclick="deselectWord(${q.id}, ${wordIndex})" class="word-chip bg-blue-600 text-white font-medium px-3 py-1.5 rounded-xl text-sm shadow-sm hover:bg-blue-700 flex items-center gap-1.5 animate-fadeIn">
+                        <span>${wordObj.text}</span>
+                        <i class="fa-solid fa-xmark text-xs opacity-70"></i>
+                    </button>
+                `).join('');
+
+                if (userSelected.length === 0) {
+                    selectedChipsHtml = `<span class="text-slate-400 text-sm italic">Nhấp vào các từ phía dưới để xếp câu...</span>`;
+                }
+
+                // Pool Area (Available chips)
+                const poolChipsHtml = q.shuffledWords.map((word, originalIndex) => {
+                    const isUsed = userSelected.some(item => item.originalIndex === originalIndex);
+                    if (isUsed) {
+                        return `<div class="w-12 h-8 bg-slate-100 rounded-xl border border-dashed border-slate-200"></div>`;
+                    }
+                    return `
+                        <button onclick="selectWord(${q.id}, '${word.replace(/'/g, "\\'")}', ${originalIndex})" class="word-chip bg-slate-100 text-slate-700 border border-slate-200 hover:bg-white hover:border-blue-400 font-medium px-3 py-1.5 rounded-xl text-sm shadow-xs transition">
+                            ${word}
+                        </button>
+                    `;
+                }).join('');
+
+                card.innerHTML = `
+                    ${cardHeader}
+                    
+                    <!-- Selected Drop Zone -->
+                    <div class="min-h-[56px] p-3 bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl flex flex-wrap gap-2 items-center mb-4 transition-colors" id="t1-zone-${q.id}">
+                        ${selectedChipsHtml}
+                    </div>
+
+                    <!-- Available Word Pool -->
+                    <div class="flex flex-wrap gap-2 items-center pt-2">
+                        ${poolChipsHtml}
+                    </div>
+
+                    <!-- Feedback Box -->
+                    <div id="t1-feedback-${q.id}" class="hidden mt-4 pt-3 border-t border-slate-100 text-sm"></div>
+                `;
+
+                container.appendChild(card);
+            });
+        }
+
+        // Render Task 2
+        function renderTask2() {
+            // Word Bank
+            const wordBankContainer = document.getElementById('word-bank-container');
+            wordBankContainer.innerHTML = task2Data.wordBank.map(word => `
+                <span class="bg-slate-100 text-slate-700 font-medium text-sm px-3 py-1.5 rounded-xl border border-slate-200 select-all cursor-pointer hover:bg-slate-200 transition">
+                    ${word}
+                </span>
+            `).join('');
+
+            // Questions
+            const questionsContainer = document.getElementById('task2-questions-list');
+            questionsContainer.innerHTML = "";
+
+            task2Data.questions.forEach((q, idx) => {
+                const val = task2UserAnswers[q.id] || "";
+                
+                const qRow = document.createElement('div');
+                qRow.className = "p-4 bg-slate-50/70 rounded-xl border border-slate-200/80 space-y-2";
+                qRow.id = `t2-row-${q.id}`;
+
+                qRow.innerHTML = `
+                    <div class="flex flex-wrap items-center text-slate-800 text-base leading-relaxed font-medium">
+                        <span>${q.prefix}</span>
+                        <input type="text" 
+                               value="${val}" 
+                               oninput="handleTask2Input(${q.id}, this.value)"
+                               placeholder="nhập từ..."
+                               class="mx-2 px-3 py-1.5 bg-white border border-slate-300 rounded-xl text-blue-600 font-semibold focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition w-36 text-center text-sm shadow-xs"
+                        />
+                        <span>${q.suffix}</span>
+                    </div>
+                    <div id="t2-feedback-${q.id}" class="hidden text-sm pt-1"></div>
+                `;
+
+                questionsContainer.appendChild(qRow);
+            });
+        }
+
+        // Task 1 Interactions
+        function selectWord(qId, wordText, originalIndex) {
+            task1UserAnswers[qId].push({ text: wordText, originalIndex: originalIndex });
+            renderTask1();
+            updateStats();
+        }
+
+        function deselectWord(qId, wordIndex) {
+            task1UserAnswers[qId].splice(wordIndex, 1);
+            renderTask1();
+            updateStats();
+        }
+
+        function clearTask1Answer(qId) {
+            task1UserAnswers[qId] = [];
+            renderTask1();
+            updateStats();
+        }
+
+        // Task 2 Interactions
+        function handleTask2Input(qId, val) {
+            task2UserAnswers[qId] = val.trim();
+            updateStats();
+        }
+
+        // Random/Shuffle Functions
+        function shuffleCurrentTask() {
+            if (currentTask === 1) {
+                // Shuffle questions order
+                task1Data = shuffleArray(task1Data);
+                // Also reshuffle word pools
+                task1Data.forEach(q => {
+                    q.shuffledWords = shuffleArray(q.words);
+                    task1UserAnswers[q.id] = []; // Clear current answer on shuffle
+                });
+                renderTask1();
+            } else {
+                // Shuffle questions order
+                task2Data.questions = shuffleArray(task2Data.questions);
+                // Reshuffle word bank display
+                task2Data.wordBank = shuffleArray(task2Data.wordBank);
+                renderTask2();
+            }
+            updateStats();
+        }
+
+        function resetCurrentTask() {
+            if (currentTask === 1) {
+                task1Data.forEach(q => {
+                    task1UserAnswers[q.id] = [];
+                });
+                renderTask1();
+            } else {
+                task2Data.questions.forEach(q => {
+                    task2UserAnswers[q.id] = "";
+                });
+                renderTask2();
+            }
+            updateStats();
+        }
+
+        // Check Answers & Grading
+        function checkAnswers() {
+            if (currentTask === 1) {
+                let correctCount = 0;
+
+                task1Data.forEach(q => {
+                    const userSentence = (task1UserAnswers[q.id] || [])
+                        .map(item => item.text)
+                        .join(" ")
+                        .trim();
+
+                    const feedbackEl = document.getElementById(`t1-feedback-${q.id}`);
+                    const cardEl = document.getElementById(`t1-card-${q.id}`);
+                    const zoneEl = document.getElementById(`t1-zone-${q.id}`);
+                    
+                    feedbackEl.classList.remove('hidden');
+
+                    // Check string equality ignoring slight punctuation space issues
+                    const isCorrect = q.correctAnswers.some(ans => {
+                        return cleanSentence(userSentence) === cleanSentence(ans);
+                    });
+
+                    if (isCorrect) {
+                        correctCount++;
+                        zoneEl.className = "min-h-[56px] p-3 bg-emerald-50 border-2 border-emerald-400 rounded-xl flex flex-wrap gap-2 items-center mb-4";
+                        feedbackEl.innerHTML = `
+                            <div class="flex items-center gap-2 text-emerald-700 font-bold">
+                                <i class="fa-solid fa-circle-check text-base"></i>
+                                <span>Chính xác! Cấu trúc câu chuẩn xác.</span>
+                            </div>
+                        `;
+                    } else {
+                        zoneEl.className = "min-h-[56px] p-3 bg-rose-50 border-2 border-rose-300 rounded-xl flex flex-wrap gap-2 items-center mb-4";
+                        feedbackEl.innerHTML = `
+                            <div class="space-y-1">
+                                <div class="flex items-center gap-2 text-rose-600 font-bold">
+                                    <i class="fa-solid fa-circle-xmark text-base"></i>
+                                    <span>Chưa chính xác!</span>
+                                </div>
+                                <div class="text-slate-600 text-xs mt-1">
+                                    <strong>Gợi ý đáp án:</strong> ${q.correctAnswers[0]}
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+            } else {
+                // Task 2
+                task2Data.questions.forEach(q => {
+                    const userVal = (task2UserAnswers[q.id] || "").toLowerCase().trim();
+                    const correctVal = q.answer.toLowerCase().trim();
+
+                    const feedbackEl = document.getElementById(`t2-feedback-${q.id}`);
+                    const rowEl = document.getElementById(`t2-row-${q.id}`);
+                    
+                    feedbackEl.classList.remove('hidden');
+
+                    if (userVal === correctVal) {
+                        rowEl.className = "p-4 bg-emerald-50/80 rounded-xl border border-emerald-200 space-y-2";
+                        feedbackEl.innerHTML = `
+                            <span class="text-emerald-700 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-check"></i> ĐÚNG
+                            </span>
+                        `;
+                    } else {
+                        rowEl.className = "p-4 bg-rose-50/80 rounded-xl border border-rose-200 space-y-2";
+                        feedbackEl.innerHTML = `
+                            <span class="text-rose-600 font-bold flex items-center gap-1.5">
+                                <i class="fa-solid fa-xmark"></i> Sai rồi! (Đáp án đúng: <u class="text-slate-800">${q.answer}</u>)
+                            </span>
+                        `;
+                    }
+                });
+            }
+
+            updateStats();
+        }
+
+        // Helper to normalize strings for comparison
+        function cleanSentence(str) {
+            return str.replace(/\s+/g, ' ').replace(/\s([.,!?:;])/g, '$1').toLowerCase().trim();
+        }
+
+        // Show Answers Direct
+        function showAnswers() {
+            if (currentTask === 1) {
+                task1Data.forEach(q => {
+                    const feedbackEl = document.getElementById(`t1-feedback-${q.id}`);
+                    feedbackEl.classList.remove('hidden');
+                    feedbackEl.innerHTML = `
+                        <div class="p-3 bg-blue-50 border border-blue-200 rounded-xl text-xs text-blue-900 space-y-1">
+                            <strong class="font-bold text-blue-700 block text-sm mb-1">Đáp án gợi ý:</strong>
+                            ${q.correctAnswers.map(ans => `<p>• ${ans}</p>`).join('')}
+                        </div>
+                    `;
+                });
+            } else {
+                task2Data.questions.forEach(q => {
+                    const feedbackEl = document.getElementById(`t2-feedback-${q.id}`);
+                    feedbackEl.classList.remove('hidden');
+                    feedbackEl.innerHTML = `
+                        <span class="text-blue-700 font-bold text-xs">
+                            Đáp án chuẩn: <span class="bg-blue-100 px-2 py-0.5 rounded text-blue-900">${q.answer}</span>
+                        </span>
+                    `;
+                });
+            }
+        }
+
+        // Update Progress & Score
+        function updateStats() {
+            let total = 0;
+            let answered = 0;
+
+            if (currentTask === 1) {
+                total = task1Data.length;
+                answered = Object.values(task1UserAnswers).filter(arr => arr.length > 0).length;
+            } else {
+                total = task2Data.questions.length;
+                answered = Object.values(task2UserAnswers).filter(val => val !== "").length;
+            }
+
+            const progressText = document.getElementById('progress-text');
+            const scoreText = document.getElementById('score-text');
+
+            progressText.innerText = `${answered}/${total}`;
+            const percentage = Math.round((answered / total) * 100) || 0;
+            scoreText.innerText = `${percentage}% hoàn thành`;
+        }
+
+        // Initialize on Load
+        window.onload = function() {
+            initData();
+            renderTask1();
+            renderTask2();
+            updateStats();
+        };
+    </script>
+</body>
+</html>
